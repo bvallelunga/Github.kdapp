@@ -1,0 +1,43 @@
+{
+  "background": false,
+  "behavior": "application",
+  "version": "0.1",
+  "title": "Github",
+  "name": "Github",
+  "identifier": "com.koding.apps.github",
+  "path": "~/Applications/Github",
+  "homepage": "bvallelunga.kd.io/github",
+  "repository": "git://github.com/bvallelunga/github.kdapp.git",
+  "description": "Github : a Koding application created with the blank template.",
+  "category": "web-app",
+  "source": {
+    "blocks": {
+      "app": {
+        "files": [
+          "./config.coffee",
+          "./views/selectVm.coffee",
+          "./controllers/kiteHelper.coffee",
+          "./controllers/installer.coffee",
+          "./views/index.coffee",
+          "./index.coffee"
+        ]
+      }
+    },
+    "stylesheets": [
+      "./resources/style.css"
+    ],
+    "less": [
+      "./less/mixins.less",
+      "./less/modal.less",
+      "./less/dropdown.less",
+      "./less/style.less"
+    ]
+  },
+  "options": {
+    "type": "tab"
+  },
+  "icns": {
+    "128": "./resources/icon.128.png"
+  },
+  "fileTypes": []
+}

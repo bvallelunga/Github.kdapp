@@ -1,0 +1,45 @@
+.new-kdmodal {
+  p {
+    margin: 10px 0;
+  }
+
+  ol {
+    list-style-type: decimal;
+    padding-left: 40px;
+
+    li {
+      display: list-item;
+      text-align: -webkit-match-parent;
+    }
+  }
+
+  .item {
+    position: relative;
+    cursor: pointer;
+    padding: 8px 10px 8px 25px;
+    border-bottom: solid 1px #ededed;
+
+    &:last-child {
+      border: none;
+    }
+
+    &:hover {
+      color: darken(rgb(26, 175, 93), 10%);
+
+      &:active {
+        color: darken(rgb(26, 175, 93), 15%);
+      }
+    }
+
+    .bubble {
+      position: absolute;
+      top: calc(~"50% - 2px");
+      left: 8px;
+      width: 8px;
+      height: 8px;
+      background: #1AAF5D;
+      .border-radius(50%);
+      .transition(all);
+    }
+  }
+}
