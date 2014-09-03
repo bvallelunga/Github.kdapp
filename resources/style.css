@@ -1,0 +1,155 @@
+.new-kdmodal p {
+  margin: 10px 0;
+}
+.new-kdmodal ol {
+  list-style-type: decimal;
+  padding-left: 40px;
+}
+.new-kdmodal ol li {
+  display: list-item;
+  text-align: -webkit-match-parent;
+}
+.new-kdmodal .item {
+  position: relative;
+  cursor: pointer;
+  padding: 8px 10px 8px 25px;
+  border-bottom: solid 1px #ededed;
+}
+.new-kdmodal .item:last-child {
+  border: none;
+}
+.new-kdmodal .item:hover {
+  color: #138345;
+}
+.new-kdmodal .item:hover:active {
+  color: #106c3a;
+}
+.new-kdmodal .item .bubble {
+  position: absolute;
+  top: calc(50% - 2px);
+  left: 8px;
+  width: 8px;
+  height: 8px;
+  background: #1AAF5D;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-radius: 50%;
+  -webkit-transition: all 0.2s ease 0;
+  -moz-transition: all, 0.2s, ease;
+  -o-transition: all 0.2s ease 0;
+  transition: all 0.2s ease 0;
+}
+.Github-dropdown {
+  position: absolute;
+  top: 50px;
+  left: calc(50% + 320px);
+  width: initial;
+  height: initial;
+  overflow: visible;
+}
+.Github-dropdown.disabled {
+  opacity: 0.5;
+}
+.Github-dropdown .header {
+  color: #808080;
+  text-align: center;
+  font-weight: bold;
+  padding: 10px;
+  border: solid 2px rgba(0, 0, 0, 0.1);
+  background: #fafafa;
+  -webkit-border-radius: 3px 3px 0 0;
+  -moz-border-radius: 3px 3px 0 0;
+  border-radius: 3px 3px 0 0;
+}
+.Github-dropdown .selection {
+  border: solid 2px rgba(0, 0, 0, 0.1);
+  border-top: none;
+  -webkit-border-radius: 0 0 3px 3px;
+  -moz-border-radius: 0 0 3px 3px;
+  border-radius: 0 0 3px 3px;
+  -webkit-transition: all 0.2s ease 0;
+  -moz-transition: all, 0.2s, ease;
+  -o-transition: all 0.2s ease 0;
+  transition: all 0.2s ease 0;
+}
+.Github-dropdown .selection .item {
+  position: relative;
+  cursor: pointer;
+  padding: 8px 10px 8px 25px;
+  border-bottom: solid 1px rgba(0, 0, 0, 0.05);
+  -webkit-transition: all 0.2s ease 0;
+  -moz-transition: all, 0.2s, ease;
+  -o-transition: all 0.2s ease 0;
+  transition: all 0.2s ease 0;
+}
+.Github-dropdown .selection .item:nth-child(odd) {
+  background: #FCFCFC;
+}
+.Github-dropdown .selection .item:last-child {
+  border: none;
+}
+.Github-dropdown .selection .item:hover {
+  background: rgba(87, 161, 230, 0.1);
+}
+.Github-dropdown .selection .item:hover:active {
+  background: rgba(87, 161, 230, 0.15);
+}
+.Github-dropdown .selection .item.running .bubble {
+  background: #1AAF5D;
+}
+.Github-dropdown .selection .item.stopped .bubble {
+  background: #cccccc;
+}
+.Github-dropdown .selection .item.active {
+  background: #2C97DD;
+  color: #fff;
+}
+.Github-dropdown .selection .item.active .bubble {
+  background: rgba(255, 255, 255, 0.6);
+}
+.Github-dropdown .selection .item .bubble {
+  position: absolute;
+  top: calc(50% - 3px);
+  left: 8px;
+  width: 8px;
+  height: 8px;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-radius: 50%;
+  -webkit-transition: all 0.2s ease 0;
+  -moz-transition: all, 0.2s, ease;
+  -o-transition: all 0.2s ease 0;
+  transition: all 0.2s ease 0;
+}
+.Github-installer {
+  position: relative;
+  width: 100%;
+  height: 100%%;
+  overflow: auto;
+}
+.Github-installer .wrapper {
+  position: relative;
+}
+.Github-installer .wrapper .container {
+  width: 600px;
+  margin: 0 auto;
+  padding: 50px 0 20px 0;
+  overflow: visible;
+}
+.Github-installer .wrapper .container .kdtabview .kdtabhandlecontainer {
+  background: none;
+}
+.Github-installer .wrapper .container .search-input {
+  padding: 10px;
+  border: solid 1px  #DDDDDD;
+  border-top: none;
+  outline: none;
+  background: #fbfbfb;
+  margin: 0 0 20px 0;
+  -webkit-box-shadow: none;
+  -moz-box-shadown: none;
+  box-shadow: none;
+  -webkit-border-radius: 0 0 3px 3px;
+  -moz-border-radius: 0 0 3px 3px;
+  border-radius: 0 0 3px 3px;
+}

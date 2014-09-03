@@ -66,6 +66,7 @@ class KiteHelper extends KDController
 
       repeat = KD.utils.repeat 1000, =>
         vmController.info vm, (err, vmn, info)=>
+          debugger
           if info?.state is state
             KD.utils.killRepeat repeat
             KD.utils.killWait wait

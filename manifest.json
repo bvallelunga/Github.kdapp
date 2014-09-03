@@ -16,6 +16,9 @@
         "files": [
           "./config.coffee",
           "./views/selectVm.coffee",
+          "./views/repo.coffee",
+          "./views/trending.coffee",
+          "./views/search.coffee",
           "./controllers/kiteHelper.coffee",
           "./controllers/installer.coffee",
           "./views/index.coffee",
