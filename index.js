@@ -1,10 +1,10 @@
-/* Compiled by kdc on Wed Sep 03 2014 23:22:17 GMT+0000 (UTC) */
+/* Compiled by kdc on Thu Sep 04 2014 01:29:29 GMT+0000 (UTC) */
 (function() {
 /* KDAPP STARTS */
 if (typeof window.appPreview !== "undefined" && window.appPreview !== null) {
   var appView = window.appPreview
 }
-/* BLOCK STARTS: /home/bvallelunga/Applications/Github.kdapp/config.coffee */
+/* BLOCK STARTS: /home/bvallelunga-tester2/Applications/Github.kdapp/config.coffee */
 var CLONED, CLONING, LOADING, NOT_CLONED, api, app, appCSS, appName, dataPath, domain, getSession, github, logger, maxSymbolsInDescription, oauthKey, randomTopic, repoSearchLimit, topics, user, vmHostname, _ref;
 
 _ref = [0, 1, 2, 3], NOT_CLONED = _ref[0], CLONING = _ref[1], CLONED = _ref[2], LOADING = _ref[3];
@@ -44,7 +44,7 @@ topics = ["express", "sails", "orm", "geo location", "phonegap", "ios", "contact
 randomTopic = function() {
   return topics[Math.floor(Math.random() * (topics.length - 1))];
 };
-/* BLOCK STARTS: /home/bvallelunga/Applications/Github.kdapp/views/selectVm.coffee */
+/* BLOCK STARTS: /home/bvallelunga-tester2/Applications/Github.kdapp/views/selectVm.coffee */
 var GithubSelectVm,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -204,7 +204,7 @@ GithubSelectVm = (function(_super) {
   return GithubSelectVm;
 
 })(KDView);
-/* BLOCK STARTS: /home/bvallelunga/Applications/Github.kdapp/views/repo.coffee */
+/* BLOCK STARTS: /home/bvallelunga-tester2/Applications/Github.kdapp/views/repo.coffee */
 var GithubRepoView,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -216,31 +216,58 @@ GithubRepoView = (function(_super) {
     if (options == null) {
       options = {};
     }
+    options.cssClass = "repo";
     GithubRepoView.__super__.constructor.call(this, options, data);
-    this.repo = data;
+    this.state = NOT_CLONED;
+    this.repo = options.data;
     this.installer = options.installer;
     this.loading = false;
-    options.cssClass = "repo";
   }
 
   GithubRepoView.prototype.viewAppended = function() {
-    this.addSubView(this.name = new KDCustomHTMLView({
-      cssClass: "name"
+    var extraInfo, info;
+    this.addSubView(new KDCustomHTMLView({
+      cssClass: "avatar",
+      partial: "<img src=\"" + this.repo.avatar + "\"/>"
     }));
-    name.addSubView(new KDCustomHTMLView({
-      tagName: "span",
-      partial: this.repo.user
+    this.addSubView(info = new KDCustomHTMLView({
+      cssClass: "info"
     }));
-    return name.addSubView(new KDCustomHTMLView({
-      tagName: "strong",
-      partial: this.repo.name
+    info.addSubView(new KDCustomHTMLView({
+      tagName: "a",
+      cssClass: "name",
+      partial: "<span>" + this.repo.user + "</span>/<strong>" + this.repo.name + "</strong>",
+      attributes: {
+        href: this.repo.url,
+        target: "_blank"
+      }
+    }));
+    info.addSubView(new KDCustomHTMLView({
+      cssClass: "description",
+      partial: this.repo.description
+    }));
+    this.addSubView(extraInfo = new KDCustomHTMLView({
+      cssClass: "extra-info"
+    }));
+    extraInfo.addSubView(new KDCustomHTMLView({
+      cssClass: "details",
+      partial: "" + (this.repo.language || "Unknown") + " - Stars: " + this.repo.stars
+    }));
+    return extraInfo.addSubView(new KDCustomHTMLView({
+      partial: "clone to vm",
+      cssClass: 'button green solid',
+      click: (function(_this) {
+        return function() {
+          return console.log("clone clicked: " + _this.repo.sshCloneUrl);
+        };
+      })(this)
     }));
   };
 
   return GithubRepoView;
 
-})(KDView);
-/* BLOCK STARTS: /home/bvallelunga/Applications/Github.kdapp/views/trending.coffee */
+})(KDListItemView);
+/* BLOCK STARTS: /home/bvallelunga-tester2/Applications/Github.kdapp/views/trending.coffee */
 var GithubTrendingPaneView,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -276,18 +303,18 @@ GithubTrendingPaneView = (function(_super) {
     return this.installer.trendingRepos().then((function(_this) {
       return function(repos) {
         var loading, repo, _i, _len, _results;
+        _this.hideLoader();
         if (repos != null) {
           _results = [];
           for (_i = 0, _len = repos.length; _i < _len; _i++) {
             repo = repos[_i];
-            _results.push(_this.repos.addSubview = new GithubRepoView({
+            _results.push(_this.repos.addItemView(new GithubRepoView({
               installer: _this.installer,
               data: repo
-            }));
+            })));
           }
           return _results;
         } else {
-          _this.hideLoader();
           _this.repos.addItemView(new KDView({
             partial: "Woah, slow down. Github can't handle that many search requests. Try again in a minute"
           }));
@@ -306,7 +333,7 @@ GithubTrendingPaneView = (function(_super) {
   return GithubTrendingPaneView;
 
 })(KDView);
-/* BLOCK STARTS: /home/bvallelunga/Applications/Github.kdapp/views/search.coffee */
+/* BLOCK STARTS: /home/bvallelunga-tester2/Applications/Github.kdapp/views/search.coffee */
 var GithubSearchPaneView,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -326,7 +353,7 @@ GithubSearchPaneView = (function(_super) {
   GithubSearchPaneView.prototype.viewAppended = function() {
     this.addSubView(this.searchBox = new KDInputView({
       cssClass: "search-input",
-      placeholder: "Search github..."
+      placeholder: "Search github for " + (topics.slice(0, 3).join(", ")) + "..."
     }));
     this.searchBox.on('keydown', (function(_this) {
       return function(e) {
@@ -350,24 +377,22 @@ GithubSearchPaneView = (function(_super) {
   };
 
   GithubSearchPaneView.prototype.populateRepos = function(repos) {
-    var loading, repo, _i, _len, _results;
+    var repo, _i, _len, _results;
+    this.hideLoader();
     if (repos != null) {
       _results = [];
       for (_i = 0, _len = repos.length; _i < _len; _i++) {
         repo = repos[_i];
-        _results.push(this.repos.addSubview = new GithubRepoView({
+        _results.push(this.repos.addItemView(new GithubRepoView({
           installer: this.installer,
           data: repo
-        }));
+        })));
       }
       return _results;
     } else {
-      this.repos.empty();
-      this.hideLoader();
-      this.repos.addItemView(new KDView({
+      return this.repos.addItemView(new KDView({
         partial: "Woah, slow down. Github can't handle that many search requests. Try again in a minute"
       }));
-      return loading = false;
     }
   };
 
@@ -380,7 +405,7 @@ GithubSearchPaneView = (function(_super) {
   return GithubSearchPaneView;
 
 })(KDView);
-/* BLOCK STARTS: /home/bvallelunga/Applications/Github.kdapp/controllers/kiteHelper.coffee */
+/* BLOCK STARTS: /home/bvallelunga-tester2/Applications/Github.kdapp/controllers/kiteHelper.coffee */
 var KiteHelper,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -574,7 +599,7 @@ KiteHelper = (function(_super) {
   return KiteHelper;
 
 })(KDController);
-/* BLOCK STARTS: /home/bvallelunga/Applications/Github.kdapp/controllers/installer.coffee */
+/* BLOCK STARTS: /home/bvallelunga-tester2/Applications/Github.kdapp/controllers/installer.coffee */
 var GithubInstallerController,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -623,7 +648,7 @@ GithubInstallerController = (function(_super) {
     return {
       name: repo.name,
       user: repo.owner.login,
-      authorGravatarUrl: repo.owner.avatar_url,
+      avatar: repo.owner.avatar_url,
       cloneUrl: repo.clone_url,
       description: repo.description,
       stars: repo.stargazers_count,
@@ -658,7 +683,7 @@ GithubInstallerController = (function(_super) {
   return GithubInstallerController;
 
 })(KDController);
-/* BLOCK STARTS: /home/bvallelunga/Applications/Github.kdapp/views/index.coffee */
+/* BLOCK STARTS: /home/bvallelunga-tester2/Applications/Github.kdapp/views/index.coffee */
 var GithubMainView,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -715,7 +740,7 @@ GithubMainView = (function(_super) {
   return GithubMainView;
 
 })(KDView);
-/* BLOCK STARTS: /home/bvallelunga/Applications/Github.kdapp/index.coffee */
+/* BLOCK STARTS: /home/bvallelunga-tester2/Applications/Github.kdapp/index.coffee */
 var GithubController,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };

@@ -19,13 +19,98 @@
 
       .search-input {
         padding: 10px;
-        border: solid 1px  #DDDDDD;
+        border: solid 1px #DDDDDD;
         border-top: none;
         outline: none;
         background: #fbfbfb;
         margin: 0 0 20px 0;
         .box-shadow(none);
         .border-radius(0 0 3px 3px);
+      }
+      
+      .repos {
+        .repo {
+          position: relative;
+          padding: 15px 10px;
+          border-bottom: solid 1px #ededed;
+          .clearfix();
+          .box-sizing(border-box);
+          
+          &:nth-child(even) {
+            background: #fbfbfb;
+          }
+          
+          .avatar {
+            width: 80px;
+            height: 80px;
+            margin-right: 25px;
+            overflow: hidden;
+            .float-left();
+            .border-radius(3px);
+            
+            img {
+              width: 80px;
+              height: 80px;
+            }
+          }
+          
+          .info {
+            width: calc(~"100% - 265px");
+            .float-left();
+            
+            .name {
+              color: #4183C4;
+              font-size: 18px;
+              text-decoration: none;
+              margin-bottom: 5px;
+              height: 22px;
+              display: block;
+              .ellipsis();
+              
+              strong {
+                font-weight: bold;
+              }
+              
+              &:hover {
+                text-decoration: underline;
+              }
+            }
+            
+            .description {
+              color: #666;
+            }
+          }
+          
+          .extra-info {
+            position: absolute;
+            top: 15px;
+            right: 10px;
+            
+            .details {
+              color: #666;
+              font-weight: bold;
+              font-size: 14px;
+              margin: 4px 0 10px 0;
+            }
+            
+            .button {
+              padding: 12px;
+              background: #1AAF5D;
+              color: #fff;
+              cursor: pointer;
+              .float-right();
+              .border-radius(3px);
+              
+              &:hover {
+                background: darken(#1AAF5D, 5%);
+                
+                &:active {
+                  background: darken(#1AAF5D, 10%);
+                }
+              }
+            }
+          }
+        }
       }
     }
   }

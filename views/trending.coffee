@@ -1,6 +1,7 @@
 class GithubTrendingPaneView extends KDView
   constructor: (options = {},data) ->
     super options,data
+    
     @installer = options.installer
     @loading = false
 
@@ -16,14 +17,14 @@ class GithubTrendingPaneView extends KDView
   populateRepos: ->
     @repos.empty()
     @installer.trendingRepos().then (repos) =>
+      @hideLoader()
+      
       if repos?
         for repo in repos
-          @repos.addSubview = new GithubRepoView
+          @repos.addItemView new GithubRepoView
             installer: @installer
             data     : repo
       else
-        @hideLoader()
-
         @repos.addItemView new KDView
           partial: "Woah, slow down. Github can't handle that many search requests. Try again in a minute"
         loading = false

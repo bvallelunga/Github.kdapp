@@ -27,7 +27,7 @@ class GithubInstallerController extends KDController
   repoData: (repo) ->
     name: repo.name
     user: repo.owner.login
-    authorGravatarUrl: repo.owner.avatar_url
+    avatar: repo.owner.avatar_url
     cloneUrl: repo.clone_url
     description: repo.description
     stars: repo.stargazers_count
