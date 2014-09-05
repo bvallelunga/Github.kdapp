@@ -3,10 +3,10 @@ class GithubMyReposPaneView extends KDView
     super options,data
 
     @installer = options.installer
-    @loading = false
 
   viewAppended: ->
     @addSubView @loader = new KDLoaderView
+      cssClass  : "loader"
       showLoader: false
 
     @addSubView @repos = new KDListView
@@ -14,10 +14,15 @@ class GithubMyReposPaneView extends KDView
 
     KD.utils.defer => @populateRepos()
 
+  reload: ->
+    @populateRepos()
+
   populateRepos: ->
+    @loader.show()
     @repos.empty()
+
     @installer.myRepos().then (repos) =>
-      @hideLoader()
+      @loader.hide()
 
       if repos?
         for repo in repos
@@ -27,8 +32,3 @@ class GithubMyReposPaneView extends KDView
       else
         @repos.addItemView new KDView
           partial: "Woah, slow down. Github can't handle that many search requests. Try again in a minute"
-        loading = false
-
-  hideLoader: ->
-    loading = false
-    @loader.hide()

@@ -5,9 +5,9 @@ class GithubInstallerController extends KDController
     { githubInstallerController } = KD.singletons
     return githubInstallerController if githubInstallerController
 
-    @kiteHelper = options.kiteHelper
-    @appStorage = options.appStorage
-    @token      = null
+    @kiteHelper  = options.kiteHelper
+    @appStorage  = options.appStorage
+    @token       = null
     @registerSingleton "githubInstallerController", this, yes
     super options, data
 
@@ -41,17 +41,18 @@ class GithubInstallerController extends KDController
           reject err
 
   request: (topic)->
-    paramaters = "q=#{topic}&sort=stars&order=desc&limit=#{repoSearchLimit}"
-    @handler("/search/repositories?#{paramaters}").then (response) =>
-      repos = []
+    @clonedRepos().then (clonedRepos)=>
+      paramaters = "q=#{topic}&sort=stars&order=desc&limit=#{repoSearchLimit}"
+      @handler("/search/repositories?#{paramaters}").then (response) =>
+        repos = []
 
-      for repo in response.items
-        repoData = @repoData repo
-        repos.push repoData
+        for repo in response.items
+          repoData = @repoData clonedRepos, repo
+          repos.push repoData
 
-      return repos
+        return repos
 
-  repoData: (repo) ->
+  repoData: (repos, repo) ->
     name: repo.name
     user: repo.owner.login
     avatar: repo.owner.avatar_url
@@ -61,7 +62,7 @@ class GithubInstallerController extends KDController
     language: repo.language
     url: repo.html_url
     sshCloneUrl: repo.ssh_url
-    cloned: false
+    cloned: repo.name in repos
 
   searchRepos: (search)->
     @request(search)
@@ -76,36 +77,37 @@ class GithubInstallerController extends KDController
         value = @appStorage.getValue "repos"
 
         if value?
-          decode = value.replace(/&quot;/g,"\"")
-          resolve JSON.parse decode
+          resolve value
         else
           reject error
 
   myRepos: ->
-    @handler("/user/repos").then (response) =>
-      repos = []
+    @clonedRepos().then (clonedRepos)=>
+      @handler("/user/repos").then (response) =>
+        repos = []
 
-      for repo in response
-        repoData = @repoData repo
-        repos.push repoData
+        for repo in response
+          repoData = @repoData clonedRepos, repo
+          repos.push repoData
 
-      return repos
+        return repos
+
+  clonedRepos: ->
+    @kiteHelper.run
+      command: """
+        mkdir -p ~/Github;
+        cd ~/Github;
+        ls -d */;
+      """
+    .then (response)->
+      response.stdout.split("\n").map (folder)-> folder.slice(0, -1)
 
   cloneRepo: (repo)->
-    unless @modal?
-      new Promise (resolve, reject)=>
-        container = new KDCustomHTMLView
-          tagName         : 'div'
+    @announce "Cloning #{repo.name}..."
 
-        @modal = new KDModalView
-          title           : "Select Clone Location"
-          overlay         : yes
-          overlayClick    : no
-          width           : 400
-          height          : "auto"
-          cssClass        : "vm-kdmodal"
-          view            : container
-          cancel          : => @removeModal()
+    @kiteHelper.run
+      command: "git clone #{repo.cloneUrl} ~/Github/#{repo.name}"
+    .then => @announce false
 
   removeModal: ->
     @modal.destroy()

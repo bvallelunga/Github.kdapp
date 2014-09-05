@@ -42,10 +42,10 @@ class GithubMainView extends KDView
       title     : "Search"
       closable  : false
 
-    @trendingTab.setMainView new GithubTrendingPaneView
+    @trendingTab.setMainView @trending = new GithubTrendingPaneView
       installer : @installer
 
-    @searchTab.setMainView new GithubSearchPaneView
+    @searchTab.setMainView @search = new GithubSearchPaneView
       installer : @installer
 
     @tabView.showPane @trendingTab
@@ -54,8 +54,14 @@ class GithubMainView extends KDView
       token = OAuth.create "github"
       @initPersonal token if token != false
 
+      @selectVm.on "reload-tabs", @bound "reloadTabs"
       @selectVm.on "status-update", @bound "statusUpdate"
       @installer.on "status-update", @bound "statusUpdate"
+
+  reloadTabs: ->
+    @trending.reload()
+    @search.reload()
+    @myRepos.reload() if @myRepos?
 
   statusUpdate: (message, error)->
     if message is false
@@ -83,5 +89,5 @@ class GithubMainView extends KDView
       title: "My Repos"
       closable: false
 
-    @myReposTab.setMainView new GithubMyReposPaneView
+    @myReposTab.setMainView @myRepos = new GithubMyReposPaneView
       installer : @installer

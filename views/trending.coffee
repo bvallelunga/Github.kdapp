@@ -4,7 +4,6 @@ class GithubTrendingPaneView extends KDView
 
     @topic = randomTopic()
     @installer = options.installer
-    @loading = false
 
   viewAppended: ->
     @addSubView new KDListView
@@ -14,6 +13,7 @@ class GithubTrendingPaneView extends KDView
       """
 
     @addSubView @loader = new KDLoaderView
+      cssClass  : "loader"
       showLoader: false
 
     @addSubView @repos = new KDListView
@@ -21,10 +21,15 @@ class GithubTrendingPaneView extends KDView
 
     KD.utils.defer => @populateRepos()
 
+  reload: ->
+    @populateRepos()
+
   populateRepos: ->
+    @loader.show()
     @repos.empty()
-    @installer.trendingRepos().then (repos) =>
-      @hideLoader()
+
+    @installer.trendingRepos(@topic).then (repos) =>
+      @loader.hide()
 
       if repos?
         for repo in repos
@@ -34,8 +39,3 @@ class GithubTrendingPaneView extends KDView
       else
         @repos.addItemView new KDView
           partial: "Woah, slow down. Github can't handle that many search requests. Try again in a minute"
-        loading = false
-
-  hideLoader: ->
-    loading = false
-    @loader.hide()

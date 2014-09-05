@@ -33,7 +33,7 @@ class KiteHelper extends KDController
     @vmIsStarting = false
 
   getVm: ->
-    @defaultVm ?= @_vms.first.hostnameAlias
+    @defaultVm ?= @_vms.first
 
   getVmByName: (name) ->
     for vm in @_vms when vm.hostnameAlias is name
@@ -85,7 +85,7 @@ class KiteHelper extends KDController
   getKite:->
     new Promise (resolve, reject)=>
       @getReady().then =>
-        vm = @getVm()
+        vm = @getVm().hostnameAlias
         {vmController} = KD.singletons
 
         unless kite = @_kites[vm]

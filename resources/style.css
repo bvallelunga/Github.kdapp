@@ -148,6 +148,10 @@
   -moz-border-radius: 3px 3px 0 0;
   border-radius: 3px 3px 0 0;
 }
+.Github-installer .wrapper .container .loader {
+  display: block;
+  margin: 20px auto;
+}
 .Github-installer .wrapper .container .status-bar,
 .Github-installer .wrapper .container .github-button {
   position: absolute;
@@ -283,11 +287,13 @@
   margin: 4px 0 10px 0;
 }
 .Github-installer .wrapper .container .repos .repo .extra-info .button {
-  padding: 12px;
+  padding: 12px 0;
   color: #fff;
   background: #1AAF5D;
   cursor: pointer;
   opacity: 0.6;
+  width: 100px;
+  text-align: center;
   display: inline;
   float: right;
   -webkit-border-radius: 3px;

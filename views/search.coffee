@@ -1,8 +1,8 @@
 class GithubSearchPaneView extends KDView
   constructor: (options = {},data) ->
     super options,data
+
     @installer = options.installer
-    @loading = false
 
   viewAppended: ->
     @addSubView @searchBox = new KDInputView
@@ -11,22 +11,27 @@ class GithubSearchPaneView extends KDView
 
     @searchBox.on 'keydown', (e) =>
       if e.keyCode is 13 and @searchBox.getValue()
-        loading = true
-        @loader.show()
-        @repos.empty()
-
-        @installer.searchRepos @searchBox.getValue()
-        .then (repos) => @populateRepos repos
+        @searchRepos @searchBox.getValue()
 
     @addSubView @loader = new KDLoaderView
+      cssClass  : "loader"
       showLoader: false
 
     @addSubView @repos = new KDListView
       cssClass: "repos"
 
+  reload: ->
+    @searchRepos @searchBox.getValue()
+
+  searchRepos: (search)->
+    @loader.show()
+    @repos.empty()
+
+    @installer.searchRepos(search).then (repos) =>
+      @loader.hide()
+      @populateRepos repos
+
   populateRepos: (repos) ->
-    @hideLoader()
-    
     if repos?
       for repo in repos
         @repos.addItemView new GithubRepoView
@@ -35,7 +40,3 @@ class GithubSearchPaneView extends KDView
     else
       @repos.addItemView new KDView
         partial: "Woah, slow down. Github can't handle that many search requests. Try again in a minute"
-
-  hideLoader: ->
-    loading = false
-    @loader.hide()

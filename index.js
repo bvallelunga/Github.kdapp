@@ -1,4 +1,4 @@
-/* Compiled by kdc on Fri Sep 05 2014 01:22:35 GMT+0000 (UTC) */
+/* Compiled by kdc on Fri Sep 05 2014 22:06:11 GMT+0000 (UTC) */
 (function() {
 /* KDAPP STARTS */
 if (typeof window.appPreview !== "undefined" && window.appPreview !== null) {
@@ -67,7 +67,7 @@ GithubSelectVm = (function(_super) {
         _this.addSubView(_this.header = new KDCustomHTMLView({
           tagName: 'div',
           cssClass: 'header',
-          partial: _this.namify(_this.kiteHelper.getVm())
+          partial: _this.namify(_this.kiteHelper.getVm().hostnameAlias)
         }));
         _this.addSubView(_this.selection = new KDCustomHTMLView({
           tagName: 'div',
@@ -113,11 +113,11 @@ GithubSelectVm = (function(_super) {
           cssClass: "item",
           click: function() {
             if (!_this.hasClass("disabled")) {
-              return _this.chooseVm(vm.hostnameAlias);
+              return _this.chooseVm(vm);
             }
           }
         }));
-        if (vm.hostnameAlias === _this.kiteHelper.getVm()) {
+        if (vm.hostnameAlias === _this.kiteHelper.getVm().hostnameAlias) {
           vmItem.setClass("active");
         }
         vmItem.addSubView(new KDCustomHTMLView({
@@ -137,9 +137,11 @@ GithubSelectVm = (function(_super) {
   };
 
   GithubSelectVm.prototype.chooseVm = function(vm) {
+    var hostname;
+    hostname = this.namify(vm.hostnameAlias);
     this.disabled(true);
-    this.announce("Please wait while we turn on " + (this.namify(vm)) + "... It can take awhile", false);
-    this.header.updatePartial(this.namify(vm));
+    this.announce("Please wait while we turn on " + hostname + "... It can take awhile", false);
+    this.header.updatePartial(hostname);
     this.kiteHelper.setDefaultVm(vm);
     return this.turnOnVm();
   };
@@ -149,7 +151,8 @@ GithubSelectVm = (function(_super) {
       return function() {
         _this.announce(false);
         _this.disabled(false);
-        return _this.updateList();
+        _this.updateList();
+        return _this.emit("reload-tabs");
       };
     })(this))["catch"]((function(_this) {
       return function(err) {
@@ -299,7 +302,10 @@ GithubRepoView = (function(_super) {
       cssClass: "button " + cssClass,
       click: (function(_this) {
         return function() {
+          _this.button.setClass("cloned");
+          _this.button.updatePartial("cloning");
           return _this.installer.cloneRepo(_this.repo).then(function() {
+            _this.button.updatePartial("cloned");
             return _this.button.setClass("cloned");
           })["catch"](function(error) {
             console.log(error);
@@ -329,11 +335,11 @@ GithubMyReposPaneView = (function(_super) {
     }
     GithubMyReposPaneView.__super__.constructor.call(this, options, data);
     this.installer = options.installer;
-    this.loading = false;
   }
 
   GithubMyReposPaneView.prototype.viewAppended = function() {
     this.addSubView(this.loader = new KDLoaderView({
+      cssClass: "loader",
       showLoader: false
     }));
     this.addSubView(this.repos = new KDListView({
@@ -346,12 +352,17 @@ GithubMyReposPaneView = (function(_super) {
     })(this));
   };
 
+  GithubMyReposPaneView.prototype.reload = function() {
+    return this.populateRepos();
+  };
+
   GithubMyReposPaneView.prototype.populateRepos = function() {
+    this.loader.show();
     this.repos.empty();
     return this.installer.myRepos().then((function(_this) {
       return function(repos) {
-        var loading, repo, _i, _len, _results;
-        _this.hideLoader();
+        var repo, _i, _len, _results;
+        _this.loader.hide();
         if (repos != null) {
           _results = [];
           for (_i = 0, _len = repos.length; _i < _len; _i++) {
@@ -363,19 +374,12 @@ GithubMyReposPaneView = (function(_super) {
           }
           return _results;
         } else {
-          _this.repos.addItemView(new KDView({
+          return _this.repos.addItemView(new KDView({
             partial: "Woah, slow down. Github can't handle that many search requests. Try again in a minute"
           }));
-          return loading = false;
         }
       };
     })(this));
-  };
-
-  GithubMyReposPaneView.prototype.hideLoader = function() {
-    var loading;
-    loading = false;
-    return this.loader.hide();
   };
 
   return GithubMyReposPaneView;
@@ -396,7 +400,6 @@ GithubTrendingPaneView = (function(_super) {
     GithubTrendingPaneView.__super__.constructor.call(this, options, data);
     this.topic = randomTopic();
     this.installer = options.installer;
-    this.loading = false;
   }
 
   GithubTrendingPaneView.prototype.viewAppended = function() {
@@ -405,6 +408,7 @@ GithubTrendingPaneView = (function(_super) {
       partial: "Showing trending repos related to <strong>" + this.topic + "</strong>..."
     }));
     this.addSubView(this.loader = new KDLoaderView({
+      cssClass: "loader",
       showLoader: false
     }));
     this.addSubView(this.repos = new KDListView({
@@ -417,12 +421,17 @@ GithubTrendingPaneView = (function(_super) {
     })(this));
   };
 
+  GithubTrendingPaneView.prototype.reload = function() {
+    return this.populateRepos();
+  };
+
   GithubTrendingPaneView.prototype.populateRepos = function() {
+    this.loader.show();
     this.repos.empty();
-    return this.installer.trendingRepos().then((function(_this) {
+    return this.installer.trendingRepos(this.topic).then((function(_this) {
       return function(repos) {
-        var loading, repo, _i, _len, _results;
-        _this.hideLoader();
+        var repo, _i, _len, _results;
+        _this.loader.hide();
         if (repos != null) {
           _results = [];
           for (_i = 0, _len = repos.length; _i < _len; _i++) {
@@ -434,19 +443,12 @@ GithubTrendingPaneView = (function(_super) {
           }
           return _results;
         } else {
-          _this.repos.addItemView(new KDView({
+          return _this.repos.addItemView(new KDView({
             partial: "Woah, slow down. Github can't handle that many search requests. Try again in a minute"
           }));
-          return loading = false;
         }
       };
     })(this));
-  };
-
-  GithubTrendingPaneView.prototype.hideLoader = function() {
-    var loading;
-    loading = false;
-    return this.loader.hide();
   };
 
   return GithubTrendingPaneView;
@@ -466,7 +468,6 @@ GithubSearchPaneView = (function(_super) {
     }
     GithubSearchPaneView.__super__.constructor.call(this, options, data);
     this.installer = options.installer;
-    this.loading = false;
   }
 
   GithubSearchPaneView.prototype.viewAppended = function() {
@@ -476,18 +477,13 @@ GithubSearchPaneView = (function(_super) {
     }));
     this.searchBox.on('keydown', (function(_this) {
       return function(e) {
-        var loading;
         if (e.keyCode === 13 && _this.searchBox.getValue()) {
-          loading = true;
-          _this.loader.show();
-          _this.repos.empty();
-          return _this.installer.searchRepos(_this.searchBox.getValue()).then(function(repos) {
-            return _this.populateRepos(repos);
-          });
+          return _this.searchRepos(_this.searchBox.getValue());
         }
       };
     })(this));
     this.addSubView(this.loader = new KDLoaderView({
+      cssClass: "loader",
       showLoader: false
     }));
     return this.addSubView(this.repos = new KDListView({
@@ -495,9 +491,23 @@ GithubSearchPaneView = (function(_super) {
     }));
   };
 
+  GithubSearchPaneView.prototype.reload = function() {
+    return this.searchRepos(this.searchBox.getValue());
+  };
+
+  GithubSearchPaneView.prototype.searchRepos = function(search) {
+    this.loader.show();
+    this.repos.empty();
+    return this.installer.searchRepos(search).then((function(_this) {
+      return function(repos) {
+        _this.loader.hide();
+        return _this.populateRepos(repos);
+      };
+    })(this));
+  };
+
   GithubSearchPaneView.prototype.populateRepos = function(repos) {
     var repo, _i, _len, _results;
-    this.hideLoader();
     if (repos != null) {
       _results = [];
       for (_i = 0, _len = repos.length; _i < _len; _i++) {
@@ -513,12 +523,6 @@ GithubSearchPaneView = (function(_super) {
         partial: "Woah, slow down. Github can't handle that many search requests. Try again in a minute"
       }));
     }
-  };
-
-  GithubSearchPaneView.prototype.hideLoader = function() {
-    var loading;
-    loading = false;
-    return this.loader.hide();
   };
 
   return GithubSearchPaneView;
@@ -580,7 +584,7 @@ KiteHelper = (function(_super) {
   };
 
   KiteHelper.prototype.getVm = function() {
-    return this.defaultVm != null ? this.defaultVm : this.defaultVm = this._vms.first.hostnameAlias;
+    return this.defaultVm != null ? this.defaultVm : this.defaultVm = this._vms.first;
   };
 
   KiteHelper.prototype.getVmByName = function(name) {
@@ -664,7 +668,7 @@ KiteHelper = (function(_super) {
       return function(resolve, reject) {
         return _this.getReady().then(function() {
           var kite, vm, vmController;
-          vm = _this.getVm();
+          vm = _this.getVm().hostnameAlias;
           vmController = KD.singletons.vmController;
           if (!(kite = _this._kites[vm])) {
             return reject({
@@ -717,7 +721,8 @@ KiteHelper = (function(_super) {
 /* BLOCK STARTS: /home/bvallelunga/Applications/Github.kdapp/controllers/installer.coffee */
 var GithubInstallerController,
   __hasProp = {}.hasOwnProperty,
-  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 GithubInstallerController = (function(_super) {
   __extends(GithubInstallerController, _super);
@@ -778,24 +783,27 @@ GithubInstallerController = (function(_super) {
   };
 
   GithubInstallerController.prototype.request = function(topic) {
-    var paramaters;
-    paramaters = "q=" + topic + "&sort=stars&order=desc&limit=" + repoSearchLimit;
-    return this.handler("/search/repositories?" + paramaters).then((function(_this) {
-      return function(response) {
-        var repo, repoData, repos, _i, _len, _ref;
-        repos = [];
-        _ref = response.items;
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          repo = _ref[_i];
-          repoData = _this.repoData(repo);
-          repos.push(repoData);
-        }
-        return repos;
+    return this.clonedRepos().then((function(_this) {
+      return function(clonedRepos) {
+        var paramaters;
+        paramaters = "q=" + topic + "&sort=stars&order=desc&limit=" + repoSearchLimit;
+        return _this.handler("/search/repositories?" + paramaters).then(function(response) {
+          var repo, repoData, repos, _i, _len, _ref;
+          repos = [];
+          _ref = response.items;
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            repo = _ref[_i];
+            repoData = _this.repoData(clonedRepos, repo);
+            repos.push(repoData);
+          }
+          return repos;
+        });
       };
     })(this));
   };
 
-  GithubInstallerController.prototype.repoData = function(repo) {
+  GithubInstallerController.prototype.repoData = function(repos, repo) {
+    var _ref;
     return {
       name: repo.name,
       user: repo.owner.login,
@@ -806,7 +814,7 @@ GithubInstallerController = (function(_super) {
       language: repo.language,
       url: repo.html_url,
       sshCloneUrl: repo.ssh_url,
-      cloned: false
+      cloned: (_ref = repo.name, __indexOf.call(repos, _ref) >= 0)
     };
   };
 
@@ -821,12 +829,11 @@ GithubInstallerController = (function(_super) {
           _this.appStorage.setValue("repos", repos);
           return resolve(repos);
         })["catch"](function(error) {
-          var decode, value;
+          var value;
           console.log(error);
           value = _this.appStorage.getValue("repos");
           if (value != null) {
-            decode = value.replace(/&quot;/g, "\"");
-            return resolve(JSON.parse(decode));
+            return resolve(value);
           } else {
             return reject(error);
           }
@@ -836,43 +843,41 @@ GithubInstallerController = (function(_super) {
   };
 
   GithubInstallerController.prototype.myRepos = function() {
-    return this.handler("/user/repos").then((function(_this) {
-      return function(response) {
-        var repo, repoData, repos, _i, _len;
-        repos = [];
-        for (_i = 0, _len = response.length; _i < _len; _i++) {
-          repo = response[_i];
-          repoData = _this.repoData(repo);
-          repos.push(repoData);
-        }
-        return repos;
+    return this.clonedRepos().then((function(_this) {
+      return function(clonedRepos) {
+        return _this.handler("/user/repos").then(function(response) {
+          var repo, repoData, repos, _i, _len;
+          repos = [];
+          for (_i = 0, _len = response.length; _i < _len; _i++) {
+            repo = response[_i];
+            repoData = _this.repoData(clonedRepos, repo);
+            repos.push(repoData);
+          }
+          return repos;
+        });
       };
     })(this));
   };
 
+  GithubInstallerController.prototype.clonedRepos = function() {
+    return this.kiteHelper.run({
+      command: "mkdir -p ~/Github;\ncd ~/Github;\nls -d */;"
+    }).then(function(response) {
+      return response.stdout.split("\n").map(function(folder) {
+        return folder.slice(0, -1);
+      });
+    });
+  };
+
   GithubInstallerController.prototype.cloneRepo = function(repo) {
-    if (this.modal == null) {
-      return new Promise((function(_this) {
-        return function(resolve, reject) {
-          var container;
-          container = new KDCustomHTMLView({
-            tagName: 'div'
-          });
-          return _this.modal = new KDModalView({
-            title: "Select Clone Location",
-            overlay: true,
-            overlayClick: false,
-            width: 400,
-            height: "auto",
-            cssClass: "vm-kdmodal",
-            view: container,
-            cancel: function() {
-              return _this.removeModal();
-            }
-          });
-        };
-      })(this));
-    }
+    this.announce("Cloning " + repo.name + "...");
+    return this.kiteHelper.run({
+      command: "git clone " + repo.cloneUrl + " ~/Github/" + repo.name
+    }).then((function(_this) {
+      return function() {
+        return _this.announce(false);
+      };
+    })(this));
   };
 
   GithubInstallerController.prototype.removeModal = function() {
@@ -935,10 +940,10 @@ GithubMainView = (function(_super) {
       title: "Search",
       closable: false
     }));
-    this.trendingTab.setMainView(new GithubTrendingPaneView({
+    this.trendingTab.setMainView(this.trending = new GithubTrendingPaneView({
       installer: this.installer
     }));
-    this.searchTab.setMainView(new GithubSearchPaneView({
+    this.searchTab.setMainView(this.search = new GithubSearchPaneView({
       installer: this.installer
     }));
     this.tabView.showPane(this.trendingTab);
@@ -949,10 +954,19 @@ GithubMainView = (function(_super) {
         if (token !== false) {
           _this.initPersonal(token);
         }
+        _this.selectVm.on("reload-tabs", _this.bound("reloadTabs"));
         _this.selectVm.on("status-update", _this.bound("statusUpdate"));
         return _this.installer.on("status-update", _this.bound("statusUpdate"));
       };
     })(this));
+  };
+
+  GithubMainView.prototype.reloadTabs = function() {
+    this.trending.reload();
+    this.search.reload();
+    if (this.myRepos != null) {
+      return this.myRepos.reload();
+    }
   };
 
   GithubMainView.prototype.statusUpdate = function(message, error) {
@@ -987,7 +1001,7 @@ GithubMainView = (function(_super) {
       title: "My Repos",
       closable: false
     }));
-    return this.myReposTab.setMainView(new GithubMyReposPaneView({
+    return this.myReposTab.setMainView(this.myRepos = new GithubMyReposPaneView({
       installer: this.installer
     }));
   };

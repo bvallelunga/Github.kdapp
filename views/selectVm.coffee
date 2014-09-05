@@ -11,7 +11,7 @@ class GithubSelectVm extends KDView
       @addSubView @header = new KDCustomHTMLView
         tagName       : 'div'
         cssClass      : 'header'
-        partial       : @namify(@kiteHelper.getVm())
+        partial       : @namify(@kiteHelper.getVm().hostnameAlias)
 
       @addSubView @selection = new KDCustomHTMLView
         tagName       : 'div'
@@ -47,9 +47,9 @@ class GithubSelectVm extends KDView
         tagName       : 'div'
         cssClass      : "item"
         click         : =>
-          @chooseVm vm.hostnameAlias if !@hasClass "disabled"
+          @chooseVm vm if !@hasClass "disabled"
 
-      if vm.hostnameAlias is @kiteHelper.getVm()
+      if vm.hostnameAlias is @kiteHelper.getVm().hostnameAlias
         vmItem.setClass "active"
 
       vmItem.addSubView new KDCustomHTMLView
@@ -65,9 +65,11 @@ class GithubSelectVm extends KDView
         vmItem.setClass info?.state.toLowerCase()
 
   chooseVm: (vm)->
+    hostname = @namify vm.hostnameAlias
+
     @disabled true
-    @announce "Please wait while we turn on #{@namify vm}... It can take awhile", false
-    @header.updatePartial @namify vm
+    @announce "Please wait while we turn on #{hostname}... It can take awhile", false
+    @header.updatePartial hostname
     @kiteHelper.setDefaultVm vm
     @turnOnVm()
 
@@ -76,6 +78,7 @@ class GithubSelectVm extends KDView
       @announce false
       @disabled false
       @updateList()
+      @emit "reload-tabs"
     .catch (err)=>
       @error err
 
