@@ -15,8 +15,10 @@
       "app": {
         "files": [
           "./config.coffee",
+          "./resources/oauth.js",
           "./views/selectVm.coffee",
           "./views/repo.coffee",
+          "./views/myRepos.coffee",
           "./views/trending.coffee",
           "./views/search.coffee",
           "./controllers/kiteHelper.coffee",

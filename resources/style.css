@@ -1,30 +1,34 @@
-.new-kdmodal p {
+.vm-kdmodal p {
   margin: 10px 0;
 }
-.new-kdmodal ol {
+.vm-kdmodal ol {
   list-style-type: decimal;
   padding-left: 40px;
 }
-.new-kdmodal ol li {
+.vm-kdmodal ol li {
   display: list-item;
   text-align: -webkit-match-parent;
 }
-.new-kdmodal .item {
+.vm-kdmodal .description {
+  margin-bottom: 15px;
+  color: #666;
+}
+.vm-kdmodal .item {
   position: relative;
   cursor: pointer;
   padding: 8px 10px 8px 25px;
   border-bottom: solid 1px #ededed;
 }
-.new-kdmodal .item:last-child {
+.vm-kdmodal .item:last-child {
   border: none;
 }
-.new-kdmodal .item:hover {
+.vm-kdmodal .item:hover {
   color: #138345;
 }
-.new-kdmodal .item:hover:active {
+.vm-kdmodal .item:hover:active {
   color: #106c3a;
 }
-.new-kdmodal .item .bubble {
+.vm-kdmodal .item .bubble {
   position: absolute;
   top: calc(50% - 2px);
   left: 8px;
@@ -139,8 +143,64 @@
 .Github-installer .wrapper .container .kdtabview .kdtabhandlecontainer {
   background: none;
 }
+.Github-installer .wrapper .container .kdtabview .kdtabhandlecontainer .kdtabhandle {
+  -webkit-border-radius: 3px 3px 0 0;
+  -moz-border-radius: 3px 3px 0 0;
+  border-radius: 3px 3px 0 0;
+}
+.Github-installer .wrapper .container .status-bar,
+.Github-installer .wrapper .container .github-button {
+  position: absolute;
+  top: 0;
+  width: 600px;
+  text-align: center;
+  color: #fff;
+  padding: 12px 0;
+  border: solid 1px rgba(0, 0, 0, 0.2);
+  border-top: none;
+  font-weight: bold;
+  cursor: pointer;
+  -webkit-border-radius: 0 0 3px 3px;
+  -moz-border-radius: 0 0 3px 3px;
+  border-radius: 0 0 3px 3px;
+}
+.Github-installer .wrapper .container .status-bar.status-bar,
+.Github-installer .wrapper .container .github-button.status-bar {
+  background: #666;
+}
+.Github-installer .wrapper .container .status-bar.status-bar.error,
+.Github-installer .wrapper .container .github-button.status-bar.error {
+  background: #EA4B35;
+}
+.Github-installer .wrapper .container .status-bar.github-button,
+.Github-installer .wrapper .container .github-button.github-button {
+  background: #2C97DD;
+}
+.Github-installer .wrapper .container .status-bar.github-button:hover,
+.Github-installer .wrapper .container .github-button.github-button:hover {
+  background: #218ace;
+}
+.Github-installer .wrapper .container .status-bar.github-button:hover:active,
+.Github-installer .wrapper .container .github-button.github-button:hover:active {
+  background: #1e7bb8;
+}
+.Github-installer .wrapper .container .topic {
+  text-align: center;
+  color: #666;
+  padding: 15px;
+  border: solid 1px #DDDDDD;
+  border-top: none;
+  background: #fbfbfb;
+  margin: 0 0 20px 0;
+  -webkit-border-radius: 0 0 3px 3px;
+  -moz-border-radius: 0 0 3px 3px;
+  border-radius: 0 0 3px 3px;
+}
+.Github-installer .wrapper .container .topic strong {
+  font-weight: bold;
+}
 .Github-installer .wrapper .container .search-input {
-  padding: 10px;
+  padding: 12px;
   border: solid 1px #DDDDDD;
   border-top: none;
   outline: none;
@@ -165,6 +225,9 @@
 }
 .Github-installer .wrapper .container .repos .repo:nth-child(even) {
   background: #fbfbfb;
+}
+.Github-installer .wrapper .container .repos .repo:last-child {
+  border: none;
 }
 .Github-installer .wrapper .container .repos .repo .avatar {
   width: 80px;
@@ -221,18 +284,27 @@
 }
 .Github-installer .wrapper .container .repos .repo .extra-info .button {
   padding: 12px;
-  background: #1AAF5D;
   color: #fff;
+  background: #1AAF5D;
   cursor: pointer;
+  opacity: 0.6;
   display: inline;
   float: right;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px;
 }
+.Github-installer .wrapper .container .repos .repo .extra-info .button.cloned {
+  background: #2d97de;
+  opacity: 1 !important;
+}
+.Github-installer .wrapper .container .repos .repo .extra-info .button.error {
+  background: #EA4B35;
+  opacity: 1 !important;
+}
 .Github-installer .wrapper .container .repos .repo .extra-info .button:hover {
-  background: #179951;
+  opacity: 0.8;
 }
 .Github-installer .wrapper .container .repos .repo .extra-info .button:hover:active {
-  background: #138345;
+  opacity: 1;
 }

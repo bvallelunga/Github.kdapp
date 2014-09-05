@@ -10,6 +10,9 @@ class GithubController extends AppController
 
 do ->
 
+  # Intialize OAuth
+  OAuth.initialize oauthKey
+
   # In live mode you can add your App view to window's appView
   if appView?
     view = new GithubMainView

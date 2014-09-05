@@ -15,10 +15,64 @@
 
       .kdtabview .kdtabhandlecontainer {
         background: none;
+
+        .kdtabhandle {
+          .border-radius(3px 3px 0 0);
+        }
+      }
+
+      .status-bar,
+      .github-button {
+        position: absolute;
+        top: 0;
+        width: 600px;
+        text-align: center;
+        color: #fff;
+        padding: 12px 0;
+        border: solid 1px rgba(0, 0, 0, 0.2);
+        border-top: none;
+        font-weight: bold;
+        cursor: pointer;
+        .border-radius(0 0 3px 3px);
+
+        &.status-bar {
+          background: #666;
+
+          &.error {
+            background: #EA4B35;
+          }
+        }
+
+        &.github-button{
+          background: #2C97DD;
+
+          &:hover {
+            background: darken(#2C97DD, 5%);
+
+            &:active {
+              background: darken(#2C97DD, 10%);
+            }
+          }
+        }
+      }
+
+      .topic {
+        text-align: center;
+        color: #666;
+        padding: 15px;
+        border: solid 1px #DDDDDD;
+        border-top: none;
+        background: #fbfbfb;
+        margin: 0 0 20px 0;
+        .border-radius(0 0 3px 3px);
+
+        strong {
+          font-weight: bold;
+        }
       }
 
       .search-input {
-        padding: 10px;
+        padding: 12px;
         border: solid 1px #DDDDDD;
         border-top: none;
         outline: none;
@@ -27,7 +81,7 @@
         .box-shadow(none);
         .border-radius(0 0 3px 3px);
       }
-      
+
       .repos {
         .repo {
           position: relative;
@@ -35,11 +89,15 @@
           border-bottom: solid 1px #ededed;
           .clearfix();
           .box-sizing(border-box);
-          
+
           &:nth-child(even) {
             background: #fbfbfb;
           }
-          
+
+          &:last-child {
+            border: none;
+          }
+
           .avatar {
             width: 80px;
             height: 80px;
@@ -47,17 +105,17 @@
             overflow: hidden;
             .float-left();
             .border-radius(3px);
-            
+
             img {
               width: 80px;
               height: 80px;
             }
           }
-          
+
           .info {
             width: calc(~"100% - 265px");
             .float-left();
-            
+
             .name {
               color: #4183C4;
               font-size: 18px;
@@ -66,46 +124,57 @@
               height: 22px;
               display: block;
               .ellipsis();
-              
+
               strong {
                 font-weight: bold;
               }
-              
+
               &:hover {
                 text-decoration: underline;
               }
             }
-            
+
             .description {
               color: #666;
             }
           }
-          
+
           .extra-info {
             position: absolute;
             top: 15px;
             right: 10px;
-            
+
             .details {
               color: #666;
               font-weight: bold;
               font-size: 14px;
               margin: 4px 0 10px 0;
             }
-            
+
             .button {
               padding: 12px;
-              background: #1AAF5D;
               color: #fff;
+              background: #1AAF5D;
               cursor: pointer;
+              opacity: 0.6;
               .float-right();
               .border-radius(3px);
-              
+
+              &.cloned {
+                background: #2d97de;
+                opacity: 1 !important;
+              }
+
+              &.error {
+                background: #EA4B35;
+                opacity: 1 !important;
+              }
+
               &:hover {
-                background: darken(#1AAF5D, 5%);
-                
+                opacity: 0.8;
+
                 &:active {
-                  background: darken(#1AAF5D, 10%);
+                  opacity: 1;
                 }
               }
             }

@@ -1,18 +1,11 @@
-class GithubTrendingPaneView extends KDView
+class GithubMyReposPaneView extends KDView
   constructor: (options = {},data) ->
     super options,data
 
-    @topic = randomTopic()
     @installer = options.installer
     @loading = false
 
   viewAppended: ->
-    @addSubView new KDListView
-      cssClass: "topic"
-      partial : """
-        Showing trending repos related to <strong>#{@topic}</strong>...
-      """
-
     @addSubView @loader = new KDLoaderView
       showLoader: false
 
@@ -23,7 +16,7 @@ class GithubTrendingPaneView extends KDView
 
   populateRepos: ->
     @repos.empty()
-    @installer.trendingRepos().then (repos) =>
+    @installer.myRepos().then (repos) =>
       @hideLoader()
 
       if repos?

@@ -2,7 +2,6 @@ class GithubSelectVm extends KDView
 
   constructor: (options = {}, data)->
     @kiteHelper = options.kiteHelper
-    @installer = options.installer
 
     options.cssClass = "#{appName}-dropdown"
     super options, data
@@ -19,6 +18,22 @@ class GithubSelectVm extends KDView
         cssClass      : 'selection'
 
       @updateList()
+
+  announce: (message, error)->
+    @emit "status-update", message, error
+
+  error: (err, override)->
+    message = err.details?.message or err.message
+
+    switch message
+      when "CPU limit reached"
+        message = "To use another vm with your plan, please turn off one of your vms"
+        @turnOffVmModal()
+      else
+        message = override
+
+    console.log err
+    @announce message, true
 
   namify: (hostname)->
     return hostname.split(".")[0]
@@ -50,23 +65,31 @@ class GithubSelectVm extends KDView
         vmItem.setClass info?.state.toLowerCase()
 
   chooseVm: (vm)->
-    @kiteHelper.setDefaultVm vm
+    @disabled true
+    @announce "Please wait while we turn on #{@namify vm}... It can take awhile", false
     @header.updatePartial @namify vm
-    @updateList()
+    @kiteHelper.setDefaultVm vm
+    @turnOnVm()
+
+  turnOnVm: ->
+    @kiteHelper.testKite().then =>
+      @announce false
+      @disabled false
+      @updateList()
+    .catch (err)=>
+      @error err
 
   turnOffVm: (vm)->
-    @installer.announce "Please wait while we turn off #{@namify vm}...", WORKING, 0
+    @announce "Please wait while we turn off #{@namify vm}... It can take awhile", false
 
     @kiteHelper.turnOffVm(vm).then =>
       # Wait for Koding to register other vm is off
-      KD.utils.wait 10000, =>
-        @updateList()
+      KD.utils.wait 15000, => @turnOnVm()
     .catch (err)=>
-      @installer.error err
+      @error err
 
   turnOffVmModal: ->
-    if @modal
-      retun @modal
+    return @modal if @modal
 
     {vmController} = KD.singletons
     @addSubView container = new KDCustomHTMLView
@@ -101,7 +124,7 @@ class GithubSelectVm extends KDView
       overlayClick    : no
       width           : 400
       height          : "auto"
-      cssClass        : "new-kdmodal"
+      cssClass        : "vm-kdmodal"
       view            : container
       cancel          : => @removeModal()
 

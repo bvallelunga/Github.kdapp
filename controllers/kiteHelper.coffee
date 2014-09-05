@@ -13,12 +13,12 @@ class KiteHelper extends KDController
       {JVM} = KD.remote.api
       JVM.fetchVmsByContext (err, vms)=>
         console.warn err  if err
-        return unless vms
+        return reject vms unless vms
 
         @_vms = vms
         @_kites = {}
 
-        kiteController = KD.getSingleton 'kiteController'
+        {kiteController} = KD.singletons
 
         for vm in vms
           alias = vm.hostnameAlias
@@ -34,11 +34,17 @@ class KiteHelper extends KDController
 
   getVm: ->
     @defaultVm ?= @_vms.first.hostnameAlias
-    return @defaultVm
+
+  getVmByName: (name) ->
+    for vm in @_vms when vm.hostnameAlias is name
+        return vm
 
   getVms: ->
-    return @_vms.sort (a,b)=>
+    @_vms.sort (a,b)=>
       @getVMNumber(a) > @getVMNumber(b)
+
+  testKite: ->
+    @run command: "echo are we running"
 
   # hostnameAlias comes in format 'vm-0.senthil.kd.io', this helper
   # gets just the vm number
@@ -66,7 +72,6 @@ class KiteHelper extends KDController
 
       repeat = KD.utils.repeat 1000, =>
         vmController.info vm, (err, vmn, info)=>
-          debugger
           if info?.state is state
             KD.utils.killRepeat repeat
             KD.utils.killWait wait
@@ -76,8 +81,6 @@ class KiteHelper extends KDController
         if repeat?
           KD.utils.killRepeat repeat
           reject()
-
-
 
   getKite:->
     new Promise (resolve, reject)=>
@@ -90,6 +93,9 @@ class KiteHelper extends KDController
             message: "No such kite for #{vm}"
 
         vmController.info vm, (err, vmn, info)=>
+          if err
+            return reject err
+
           if not @vmIsStarting and info.state is "STOPPED"
             @vmIsStarting = true
             timeout = 10 * 60 * 1000
@@ -109,22 +115,8 @@ class KiteHelper extends KDController
           else
             resolve kite
 
-  run:(options, callback)->
+  run:(options)->
     @getKite().then (kite)->
       options.timeout ?= 10 * 60 * 1000
       kite.options.timeout = options.timeout
-      kite.exec(options).then (result)->
-        if callback
-          callback null, result
-      .catch (err)->
-          if callback
-            callback
-              message : "Failed to run #{options.command}"
-              details : err
-          console.error err
-    .catch (err)->
-      if callback
-        callback
-          message : "Failed to run #{options.command}"
-          details : err
-      console.error err
+      kite.exec(options)

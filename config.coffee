@@ -1,6 +1,6 @@
 # DO NOT TOUCH
 [NOT_CLONED,CLONING,
-CLONED, LOADING]        = [0..3]
+CLONED, LOADING]        = [0..5]
 user                    = KD.nick()
 domain                  = "#{user}.kd.io"
 vmHostname              = "#{user}.koding.kd.io"
@@ -17,7 +17,6 @@ logger                  = "/tmp/_Github.#{getSession()}.out"                    
 api                     = "https://api.github.com"
 repoSearchLimit         = 50
 maxSymbolsInDescription = 100
-dataPath                = "~/.gitdashboard/repodata"
 oauthKey                = "D6R6uhEmh7kmXCVT9YzSwvHP-tk"
 topics                  = [
                            "express", "sails", "orm", "geo location", "phonegap", "ios"
