@@ -1,4 +1,6 @@
 Github
 -----------
 
-Yet another awesome Koding installer application! by bvallelunga
+Dashboard for exploring, searching and cloning github repos.
+
+![Github Dashboard](https://raw.githubusercontent.com/bvallelunga/Github.kdapp/master/resources/screenshot.png)

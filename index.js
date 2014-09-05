@@ -1,9 +1,6 @@
-/* Compiled by kdc on Fri Sep 05 2014 22:11:46 GMT+0000 (UTC) */
+/* Compiled by kdc on Fri Sep 05 2014 22:12:41 GMT+0000 (UTC) */
 (function() {
 /* KDAPP STARTS */
-if (typeof window.appPreview !== "undefined" && window.appPreview !== null) {
-  var appView = window.appPreview
-}
 /* BLOCK STARTS: /home/bvallelunga/Applications/Github.kdapp/config.coffee */
 var CLONED, CLONING, LOADING, NOT_CLONED, api, app, appCSS, appName, domain, getSession, github, logger, maxSymbolsInDescription, oauthKey, randomTopic, repoSearchLimit, topics, user, vmHostname, _ref;
 
@@ -62,20 +59,19 @@ GithubSelectVm = (function(_super) {
   }
 
   GithubSelectVm.prototype.viewAppended = function() {
-    return this.kiteHelper.getReady().then((function(_this) {
-      return function() {
-        _this.addSubView(_this.header = new KDCustomHTMLView({
-          tagName: 'div',
-          cssClass: 'header',
-          partial: _this.namify(_this.kiteHelper.getVm().hostnameAlias)
-        }));
-        _this.addSubView(_this.selection = new KDCustomHTMLView({
-          tagName: 'div',
-          cssClass: 'selection'
-        }));
-        return _this.updateList();
-      };
-    })(this));
+    var _this = this;
+    return this.kiteHelper.getReady().then(function() {
+      _this.addSubView(_this.header = new KDCustomHTMLView({
+        tagName: 'div',
+        cssClass: 'header',
+        partial: _this.namify(_this.kiteHelper.getVm().hostnameAlias)
+      }));
+      _this.addSubView(_this.selection = new KDCustomHTMLView({
+        tagName: 'div',
+        cssClass: 'selection'
+      }));
+      return _this.updateList();
+    });
   };
 
   GithubSelectVm.prototype.announce = function(message, error) {
@@ -102,38 +98,37 @@ GithubSelectVm = (function(_super) {
   };
 
   GithubSelectVm.prototype.updateList = function() {
-    var vmController;
+    var vmController,
+      _this = this;
     this.selection.updatePartial("");
     vmController = KD.singletons.vmController;
-    return this.kiteHelper.getVms().forEach((function(_this) {
-      return function(vm) {
-        var vmItem;
-        _this.selection.addSubView(vmItem = new KDCustomHTMLView({
-          tagName: 'div',
-          cssClass: "item",
-          click: function() {
-            if (!_this.hasClass("disabled")) {
-              return _this.chooseVm(vm);
-            }
+    return this.kiteHelper.getVms().forEach(function(vm) {
+      var vmItem;
+      _this.selection.addSubView(vmItem = new KDCustomHTMLView({
+        tagName: 'div',
+        cssClass: "item",
+        click: function() {
+          if (!_this.hasClass("disabled")) {
+            return _this.chooseVm(vm);
           }
-        }));
-        if (vm.hostnameAlias === _this.kiteHelper.getVm().hostnameAlias) {
-          vmItem.setClass("active");
         }
-        vmItem.addSubView(new KDCustomHTMLView({
-          tagName: 'span',
-          cssClass: "bubble"
-        }));
-        vmItem.addSubView(new KDCustomHTMLView({
-          tagName: 'span',
-          cssClass: "name",
-          partial: _this.namify(vm.hostnameAlias)
-        }));
-        return vmController.info(vm.hostnameAlias, function(err, vmn, info) {
-          return vmItem.setClass(info != null ? info.state.toLowerCase() : void 0);
-        });
-      };
-    })(this));
+      }));
+      if (vm.hostnameAlias === _this.kiteHelper.getVm().hostnameAlias) {
+        vmItem.setClass("active");
+      }
+      vmItem.addSubView(new KDCustomHTMLView({
+        tagName: 'span',
+        cssClass: "bubble"
+      }));
+      vmItem.addSubView(new KDCustomHTMLView({
+        tagName: 'span',
+        cssClass: "name",
+        partial: _this.namify(vm.hostnameAlias)
+      }));
+      return vmController.info(vm.hostnameAlias, function(err, vmn, info) {
+        return vmItem.setClass(info != null ? info.state.toLowerCase() : void 0);
+      });
+    });
   };
 
   GithubSelectVm.prototype.chooseVm = function(vm) {
@@ -147,37 +142,32 @@ GithubSelectVm = (function(_super) {
   };
 
   GithubSelectVm.prototype.turnOnVm = function() {
-    return this.kiteHelper.testKite().then((function(_this) {
-      return function() {
-        _this.announce(false);
-        _this.disabled(false);
-        _this.updateList();
-        return _this.emit("reload-tabs");
-      };
-    })(this))["catch"]((function(_this) {
-      return function(err) {
-        return _this.error(err);
-      };
-    })(this));
+    var _this = this;
+    return this.kiteHelper.testKite().then(function() {
+      _this.announce(false);
+      _this.disabled(false);
+      _this.updateList();
+      return _this.emit("reload-tabs");
+    })["catch"](function(err) {
+      return _this.error(err);
+    });
   };
 
   GithubSelectVm.prototype.turnOffVm = function(vm) {
+    var _this = this;
     this.announce("Please wait while we turn off " + (this.namify(vm)) + "... It can take awhile", false);
-    return this.kiteHelper.turnOffVm(vm).then((function(_this) {
-      return function() {
-        return KD.utils.wait(15000, function() {
-          return _this.turnOnVm();
-        });
-      };
-    })(this))["catch"]((function(_this) {
-      return function(err) {
-        return _this.error(err);
-      };
-    })(this));
+    return this.kiteHelper.turnOffVm(vm).then(function() {
+      return KD.utils.wait(15000, function() {
+        return _this.turnOnVm();
+      });
+    })["catch"](function(err) {
+      return _this.error(err);
+    });
   };
 
   GithubSelectVm.prototype.turnOffVmModal = function() {
-    var container, vmController;
+    var container, vmController,
+      _this = this;
     if (this.modal) {
       return this.modal;
     }
@@ -190,25 +180,23 @@ GithubSelectVm = (function(_super) {
       cssClass: "description",
       partial: "Your plan's vm quota requires that you turn off one of your vms to use another"
     }));
-    this.kiteHelper.getVms().forEach((function(_this) {
-      return function(vm) {
-        var vmItem;
-        container.addSubView(vmItem = new KDCustomHTMLView({
-          tagName: 'div',
-          cssClass: "item",
-          partial: "<div class=\"bubble\"></div>\n" + vm.hostnameAlias,
-          click: function(event) {
-            _this.turnOffVm(vm.hostnameAlias);
-            return _this.removeModal();
-          }
-        }));
-        return vmController.info(vm.hostnameAlias, function(err, vmn, info) {
-          if ((info != null ? info.state : void 0) !== "RUNNING") {
-            return vmItem.destroy();
-          }
-        });
-      };
-    })(this));
+    this.kiteHelper.getVms().forEach(function(vm) {
+      var vmItem;
+      container.addSubView(vmItem = new KDCustomHTMLView({
+        tagName: 'div',
+        cssClass: "item",
+        partial: "<div class=\"bubble\"></div>\n" + vm.hostnameAlias,
+        click: function(event) {
+          _this.turnOffVm(vm.hostnameAlias);
+          return _this.removeModal();
+        }
+      }));
+      return vmController.info(vm.hostnameAlias, function(err, vmn, info) {
+        if ((info != null ? info.state : void 0) !== "RUNNING") {
+          return vmItem.destroy();
+        }
+      });
+    });
     return this.modal = new KDModalView({
       title: "Choose VM To Turn Off",
       overlay: true,
@@ -217,11 +205,9 @@ GithubSelectVm = (function(_super) {
       height: "auto",
       cssClass: "vm-kdmodal",
       view: container,
-      cancel: (function(_this) {
-        return function() {
-          return _this.removeModal();
-        };
-      })(this)
+      cancel: function() {
+        return _this.removeModal();
+      }
     });
   };
 
@@ -262,7 +248,8 @@ GithubRepoView = (function(_super) {
   }
 
   GithubRepoView.prototype.viewAppended = function() {
-    var buttonTitle, cssClass, extraInfo, info;
+    var buttonTitle, cssClass, extraInfo, info,
+      _this = this;
     this.addSubView(new KDCustomHTMLView({
       cssClass: "avatar",
       partial: "<img src=\"" + this.repo.avatar + "\"/>"
@@ -300,24 +287,22 @@ GithubRepoView = (function(_super) {
     return extraInfo.addSubView(this.button = new KDCustomHTMLView({
       partial: buttonTitle,
       cssClass: "button " + cssClass,
-      click: (function(_this) {
-        return function() {
-          if (!_this.repo.cloned) {
+      click: function() {
+        if (!_this.repo.cloned) {
+          _this.button.setClass("cloned");
+          _this.button.updatePartial("cloning");
+          return _this.installer.cloneRepo(_this.repo).then(function() {
+            _this.button.updatePartial("cloned");
             _this.button.setClass("cloned");
-            _this.button.updatePartial("cloning");
-            return _this.installer.cloneRepo(_this.repo).then(function() {
-              _this.button.updatePartial("cloned");
-              _this.button.setClass("cloned");
-              return _this.repo.cloned = true;
-            })["catch"](function(error) {
-              console.log(error);
-              _this.button.updatePartial("failed");
-              _this.button.setClass("error");
-              return _this.button.unsetClass("cloned");
-            });
-          }
-        };
-      })(this)
+            return _this.repo.cloned = true;
+          })["catch"](function(error) {
+            console.log(error);
+            _this.button.updatePartial("failed");
+            _this.button.setClass("error");
+            return _this.button.unsetClass("cloned");
+          });
+        }
+      }
     }));
   };
 
@@ -341,6 +326,7 @@ GithubMyReposPaneView = (function(_super) {
   }
 
   GithubMyReposPaneView.prototype.viewAppended = function() {
+    var _this = this;
     this.addSubView(this.loader = new KDLoaderView({
       cssClass: "loader",
       showLoader: false
@@ -348,11 +334,9 @@ GithubMyReposPaneView = (function(_super) {
     this.addSubView(this.repos = new KDListView({
       cssClass: "repos"
     }));
-    return KD.utils.defer((function(_this) {
-      return function() {
-        return _this.populateRepos();
-      };
-    })(this));
+    return KD.utils.defer(function() {
+      return _this.populateRepos();
+    });
   };
 
   GithubMyReposPaneView.prototype.reload = function() {
@@ -360,29 +344,28 @@ GithubMyReposPaneView = (function(_super) {
   };
 
   GithubMyReposPaneView.prototype.populateRepos = function() {
+    var _this = this;
     this.loader.show();
     this.repos.empty();
-    return this.installer.myRepos().then((function(_this) {
-      return function(repos) {
-        var repo, _i, _len, _results;
-        _this.loader.hide();
-        if (repos != null) {
-          _results = [];
-          for (_i = 0, _len = repos.length; _i < _len; _i++) {
-            repo = repos[_i];
-            _results.push(_this.repos.addItemView(new GithubRepoView({
-              installer: _this.installer,
-              data: repo
-            })));
-          }
-          return _results;
-        } else {
-          return _this.repos.addItemView(new KDView({
-            partial: "Woah, slow down. Github can't handle that many search requests. Try again in a minute"
-          }));
+    return this.installer.myRepos().then(function(repos) {
+      var repo, _i, _len, _results;
+      _this.loader.hide();
+      if (repos != null) {
+        _results = [];
+        for (_i = 0, _len = repos.length; _i < _len; _i++) {
+          repo = repos[_i];
+          _results.push(_this.repos.addItemView(new GithubRepoView({
+            installer: _this.installer,
+            data: repo
+          })));
         }
-      };
-    })(this));
+        return _results;
+      } else {
+        return _this.repos.addItemView(new KDView({
+          partial: "Woah, slow down. Github can't handle that many search requests. Try again in a minute"
+        }));
+      }
+    });
   };
 
   return GithubMyReposPaneView;
@@ -406,6 +389,7 @@ GithubTrendingPaneView = (function(_super) {
   }
 
   GithubTrendingPaneView.prototype.viewAppended = function() {
+    var _this = this;
     this.addSubView(new KDListView({
       cssClass: "topic",
       partial: "Showing trending repos related to <strong>" + this.topic + "</strong>..."
@@ -417,11 +401,9 @@ GithubTrendingPaneView = (function(_super) {
     this.addSubView(this.repos = new KDListView({
       cssClass: "repos"
     }));
-    return KD.utils.defer((function(_this) {
-      return function() {
-        return _this.populateRepos();
-      };
-    })(this));
+    return KD.utils.defer(function() {
+      return _this.populateRepos();
+    });
   };
 
   GithubTrendingPaneView.prototype.reload = function() {
@@ -429,29 +411,28 @@ GithubTrendingPaneView = (function(_super) {
   };
 
   GithubTrendingPaneView.prototype.populateRepos = function() {
+    var _this = this;
     this.loader.show();
     this.repos.empty();
-    return this.installer.trendingRepos(this.topic).then((function(_this) {
-      return function(repos) {
-        var repo, _i, _len, _results;
-        _this.loader.hide();
-        if (repos != null) {
-          _results = [];
-          for (_i = 0, _len = repos.length; _i < _len; _i++) {
-            repo = repos[_i];
-            _results.push(_this.repos.addItemView(new GithubRepoView({
-              installer: _this.installer,
-              data: repo
-            })));
-          }
-          return _results;
-        } else {
-          return _this.repos.addItemView(new KDView({
-            partial: "Woah, slow down. Github can't handle that many search requests. Try again in a minute"
-          }));
+    return this.installer.trendingRepos(this.topic).then(function(repos) {
+      var repo, _i, _len, _results;
+      _this.loader.hide();
+      if (repos != null) {
+        _results = [];
+        for (_i = 0, _len = repos.length; _i < _len; _i++) {
+          repo = repos[_i];
+          _results.push(_this.repos.addItemView(new GithubRepoView({
+            installer: _this.installer,
+            data: repo
+          })));
         }
-      };
-    })(this));
+        return _results;
+      } else {
+        return _this.repos.addItemView(new KDView({
+          partial: "Woah, slow down. Github can't handle that many search requests. Try again in a minute"
+        }));
+      }
+    });
   };
 
   return GithubTrendingPaneView;
@@ -474,17 +455,16 @@ GithubSearchPaneView = (function(_super) {
   }
 
   GithubSearchPaneView.prototype.viewAppended = function() {
+    var _this = this;
     this.addSubView(this.searchBox = new KDInputView({
       cssClass: "search-input",
       placeholder: "Search github for " + (topics.slice(0, 3).join(", ")) + "..."
     }));
-    this.searchBox.on('keydown', (function(_this) {
-      return function(e) {
-        if (e.keyCode === 13 && _this.searchBox.getValue()) {
-          return _this.searchRepos(_this.searchBox.getValue());
-        }
-      };
-    })(this));
+    this.searchBox.on('keydown', function(e) {
+      if (e.keyCode === 13 && _this.searchBox.getValue()) {
+        return _this.searchRepos(_this.searchBox.getValue());
+      }
+    });
     this.addSubView(this.loader = new KDLoaderView({
       cssClass: "loader",
       showLoader: false
@@ -499,14 +479,13 @@ GithubSearchPaneView = (function(_super) {
   };
 
   GithubSearchPaneView.prototype.searchRepos = function(search) {
+    var _this = this;
     this.loader.show();
     this.repos.empty();
-    return this.installer.searchRepos(search).then((function(_this) {
-      return function(repos) {
-        _this.loader.hide();
-        return _this.populateRepos(repos);
-      };
-    })(this));
+    return this.installer.searchRepos(search).then(function(repos) {
+      _this.loader.hide();
+      return _this.populateRepos(repos);
+    });
   };
 
   GithubSearchPaneView.prototype.populateRepos = function(repos) {
@@ -554,31 +533,30 @@ KiteHelper = (function(_super) {
   }
 
   KiteHelper.prototype.getReady = function() {
-    return new Promise((function(_this) {
-      return function(resolve, reject) {
-        var JVM;
-        JVM = KD.remote.api.JVM;
-        return JVM.fetchVmsByContext(function(err, vms) {
-          var alias, kiteController, vm, _i, _len;
-          if (err) {
-            console.warn(err);
-          }
-          if (!vms) {
-            return reject(vms);
-          }
-          _this._vms = vms;
-          _this._kites = {};
-          kiteController = KD.singletons.kiteController;
-          for (_i = 0, _len = vms.length; _i < _len; _i++) {
-            vm = vms[_i];
-            alias = vm.hostnameAlias;
-            _this._kites[alias] = kiteController.getKite("os-" + vm.region, alias, 'os');
-          }
-          _this.emit('ready');
-          return resolve();
-        });
-      };
-    })(this));
+    var _this = this;
+    return new Promise(function(resolve, reject) {
+      var JVM;
+      JVM = KD.remote.api.JVM;
+      return JVM.fetchVmsByContext(function(err, vms) {
+        var alias, kiteController, vm, _i, _len;
+        if (err) {
+          console.warn(err);
+        }
+        if (!vms) {
+          return reject(vms);
+        }
+        _this._vms = vms;
+        _this._kites = {};
+        kiteController = KD.singletons.kiteController;
+        for (_i = 0, _len = vms.length; _i < _len; _i++) {
+          vm = vms[_i];
+          alias = vm.hostnameAlias;
+          _this._kites[alias] = kiteController.getKite("os-" + vm.region, alias, 'os');
+        }
+        _this.emit('ready');
+        return resolve();
+      });
+    });
   };
 
   KiteHelper.prototype.setDefaultVm = function(vm) {
@@ -602,11 +580,10 @@ KiteHelper = (function(_super) {
   };
 
   KiteHelper.prototype.getVms = function() {
-    return this._vms.sort((function(_this) {
-      return function(a, b) {
-        return _this.getVMNumber(a) > _this.getVMNumber(b);
-      };
-    })(this));
+    var _this = this;
+    return this._vms.sort(function(a, b) {
+      return _this.getVMNumber(a) > _this.getVMNumber(b);
+    });
   };
 
   KiteHelper.prototype.testKite = function() {
@@ -622,90 +599,87 @@ KiteHelper = (function(_super) {
   };
 
   KiteHelper.prototype.turnOffVm = function(vm) {
-    return new Promise((function(_this) {
-      return function(resolve, reject) {
-        return _this.getReady().then(function() {
-          var kite;
-          if (!(kite = _this._kites[vm])) {
-            return reject({
-              message: "No such kite for " + vm
-            });
-          }
-          return kite.vmOff().then(function() {
-            return _this.whenVmState(vm, "STOPPED").then(function() {
-              return resolve();
-            })["catch"](reject);
+    var _this = this;
+    return new Promise(function(resolve, reject) {
+      return _this.getReady().then(function() {
+        var kite;
+        if (!(kite = _this._kites[vm])) {
+          return reject({
+            message: "No such kite for " + vm
+          });
+        }
+        return kite.vmOff().then(function() {
+          return _this.whenVmState(vm, "STOPPED").then(function() {
+            return resolve();
           })["catch"](reject);
         })["catch"](reject);
-      };
-    })(this));
+      })["catch"](reject);
+    });
   };
 
   KiteHelper.prototype.whenVmState = function(vm, state) {
-    return new Promise((function(_this) {
-      return function(resolve, reject) {
-        var repeat, timeout, vmController, wait;
-        vmController = KD.singletons.vmController;
-        timeout = 10 * 60 * 1000;
-        repeat = KD.utils.repeat(1000, function() {
-          return vmController.info(vm, function(err, vmn, info) {
-            if ((info != null ? info.state : void 0) === state) {
-              KD.utils.killRepeat(repeat);
-              KD.utils.killWait(wait);
-              return resolve();
-            }
-          });
-        });
-        return wait = KD.utils.wait(timeout, function() {
-          if (repeat != null) {
+    var _this = this;
+    return new Promise(function(resolve, reject) {
+      var repeat, timeout, vmController, wait;
+      vmController = KD.singletons.vmController;
+      timeout = 10 * 60 * 1000;
+      repeat = KD.utils.repeat(1000, function() {
+        return vmController.info(vm, function(err, vmn, info) {
+          if ((info != null ? info.state : void 0) === state) {
             KD.utils.killRepeat(repeat);
-            return reject();
+            KD.utils.killWait(wait);
+            return resolve();
           }
         });
-      };
-    })(this));
+      });
+      return wait = KD.utils.wait(timeout, function() {
+        if (repeat != null) {
+          KD.utils.killRepeat(repeat);
+          return reject();
+        }
+      });
+    });
   };
 
   KiteHelper.prototype.getKite = function() {
-    return new Promise((function(_this) {
-      return function(resolve, reject) {
-        return _this.getReady().then(function() {
-          var kite, vm, vmController;
-          vm = _this.getVm().hostnameAlias;
-          vmController = KD.singletons.vmController;
-          if (!(kite = _this._kites[vm])) {
-            return reject({
-              message: "No such kite for " + vm
-            });
+    var _this = this;
+    return new Promise(function(resolve, reject) {
+      return _this.getReady().then(function() {
+        var kite, vm, vmController;
+        vm = _this.getVm().hostnameAlias;
+        vmController = KD.singletons.vmController;
+        if (!(kite = _this._kites[vm])) {
+          return reject({
+            message: "No such kite for " + vm
+          });
+        }
+        return vmController.info(vm, function(err, vmn, info) {
+          var timeout;
+          if (err) {
+            return reject(err);
           }
-          return vmController.info(vm, function(err, vmn, info) {
-            var timeout;
-            if (err) {
-              return reject(err);
-            }
-            if (!_this.vmIsStarting && info.state === "STOPPED") {
-              _this.vmIsStarting = true;
-              timeout = 10 * 60 * 1000;
-              kite.options.timeout = timeout;
-              return kite.vmOn().then(function() {
-                return _this.whenVmState(vm, "RUNNING").then(function() {
-                  _this.vmIsStarting = false;
-                  return resolve(kite);
-                })["catch"](function(err) {
-                  _this.vmIsStarting = false;
-                  return reject(err);
-                });
-              }).timeout(timeout)["catch"](function(err) {
+          if (!_this.vmIsStarting && info.state === "STOPPED") {
+            _this.vmIsStarting = true;
+            timeout = 10 * 60 * 1000;
+            kite.options.timeout = timeout;
+            return kite.vmOn().then(function() {
+              return _this.whenVmState(vm, "RUNNING").then(function() {
+                _this.vmIsStarting = false;
+                return resolve(kite);
+              })["catch"](function(err) {
                 _this.vmIsStarting = false;
                 return reject(err);
               });
-            } else {
-              return resolve(kite);
-            }
-          });
+            }).timeout(timeout)["catch"](function(err) {
+              _this.vmIsStarting = false;
+              return reject(err);
+            });
+          } else {
+            return resolve(kite);
+          }
         });
-      };
-    })(this));
+      });
+    });
   };
 
   KiteHelper.prototype.run = function(options) {
@@ -766,43 +740,41 @@ GithubInstallerController = (function(_super) {
   };
 
   GithubInstallerController.prototype.handler = function(url) {
-    return new Promise((function(_this) {
-      return function(resolve, reject) {
-        if (_this.token != null) {
-          return _this.token.get(url).done(function(data) {
-            return resolve(data);
-          }).fail(function(err) {
-            return reject(err);
-          });
-        } else {
-          return $.getJSON("" + api + url).then(function(data) {
-            return resolve(data);
-          }).fail(function(err) {
-            return reject(err);
-          });
-        }
-      };
-    })(this));
+    var _this = this;
+    return new Promise(function(resolve, reject) {
+      if (_this.token != null) {
+        return _this.token.get(url).done(function(data) {
+          return resolve(data);
+        }).fail(function(err) {
+          return reject(err);
+        });
+      } else {
+        return $.getJSON("" + api + url).then(function(data) {
+          return resolve(data);
+        }).fail(function(err) {
+          return reject(err);
+        });
+      }
+    });
   };
 
   GithubInstallerController.prototype.request = function(topic) {
-    return this.clonedRepos().then((function(_this) {
-      return function(clonedRepos) {
-        var paramaters;
-        paramaters = "q=" + topic + "&sort=stars&order=desc&limit=" + repoSearchLimit;
-        return _this.handler("/search/repositories?" + paramaters).then(function(response) {
-          var repo, repoData, repos, _i, _len, _ref;
-          repos = [];
-          _ref = response.items;
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            repo = _ref[_i];
-            repoData = _this.repoData(clonedRepos, repo);
-            repos.push(repoData);
-          }
-          return repos;
-        });
-      };
-    })(this));
+    var _this = this;
+    return this.clonedRepos().then(function(clonedRepos) {
+      var paramaters;
+      paramaters = "q=" + topic + "&sort=stars&order=desc&limit=" + repoSearchLimit;
+      return _this.handler("/search/repositories?" + paramaters).then(function(response) {
+        var repo, repoData, repos, _i, _len, _ref;
+        repos = [];
+        _ref = response.items;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          repo = _ref[_i];
+          repoData = _this.repoData(clonedRepos, repo);
+          repos.push(repoData);
+        }
+        return repos;
+      });
+    });
   };
 
   GithubInstallerController.prototype.repoData = function(repos, repo) {
@@ -826,40 +798,38 @@ GithubInstallerController = (function(_super) {
   };
 
   GithubInstallerController.prototype.trendingRepos = function(topic) {
-    return new Promise((function(_this) {
-      return function(resolve, reject) {
-        return _this.request(topic).then(function(repos) {
-          _this.appStorage.setValue("repos", repos);
-          return resolve(repos);
-        })["catch"](function(error) {
-          var value;
-          console.log(error);
-          value = _this.appStorage.getValue("repos");
-          if (value != null) {
-            return resolve(value);
-          } else {
-            return reject(error);
-          }
-        });
-      };
-    })(this));
+    var _this = this;
+    return new Promise(function(resolve, reject) {
+      return _this.request(topic).then(function(repos) {
+        _this.appStorage.setValue("repos", repos);
+        return resolve(repos);
+      })["catch"](function(error) {
+        var value;
+        console.log(error);
+        value = _this.appStorage.getValue("repos");
+        if (value != null) {
+          return resolve(value);
+        } else {
+          return reject(error);
+        }
+      });
+    });
   };
 
   GithubInstallerController.prototype.myRepos = function() {
-    return this.clonedRepos().then((function(_this) {
-      return function(clonedRepos) {
-        return _this.handler("/user/repos").then(function(response) {
-          var repo, repoData, repos, _i, _len;
-          repos = [];
-          for (_i = 0, _len = response.length; _i < _len; _i++) {
-            repo = response[_i];
-            repoData = _this.repoData(clonedRepos, repo);
-            repos.push(repoData);
-          }
-          return repos;
-        });
-      };
-    })(this));
+    var _this = this;
+    return this.clonedRepos().then(function(clonedRepos) {
+      return _this.handler("/user/repos").then(function(response) {
+        var repo, repoData, repos, _i, _len;
+        repos = [];
+        for (_i = 0, _len = response.length; _i < _len; _i++) {
+          repo = response[_i];
+          repoData = _this.repoData(clonedRepos, repo);
+          repos.push(repoData);
+        }
+        return repos;
+      });
+    });
   };
 
   GithubInstallerController.prototype.clonedRepos = function() {
@@ -873,14 +843,13 @@ GithubInstallerController = (function(_super) {
   };
 
   GithubInstallerController.prototype.cloneRepo = function(repo) {
+    var _this = this;
     this.announce("Cloning " + repo.name + "...");
     return this.kiteHelper.run({
       command: "git clone " + repo.cloneUrl + " ~/Github/" + repo.name
-    }).then((function(_this) {
-      return function() {
-        return _this.announce(false);
-      };
-    })(this));
+    }).then(function() {
+      return _this.announce(false);
+    });
   };
 
   GithubInstallerController.prototype.removeModal = function() {
@@ -917,6 +886,7 @@ GithubMainView = (function(_super) {
   }
 
   GithubMainView.prototype.viewAppended = function() {
+    var _this = this;
     this.addSubView(this.wrapper = new KDCustomHTMLView({
       cssClass: 'wrapper'
     }));
@@ -950,18 +920,16 @@ GithubMainView = (function(_super) {
       installer: this.installer
     }));
     this.tabView.showPane(this.trendingTab);
-    return KD.utils.defer((function(_this) {
-      return function() {
-        var token;
-        token = OAuth.create("github");
-        if (token !== false) {
-          _this.initPersonal(token);
-        }
-        _this.selectVm.on("reload-tabs", _this.bound("reloadTabs"));
-        _this.selectVm.on("status-update", _this.bound("statusUpdate"));
-        return _this.installer.on("status-update", _this.bound("statusUpdate"));
-      };
-    })(this));
+    return KD.utils.defer(function() {
+      var token;
+      token = OAuth.create("github");
+      if (token !== false) {
+        _this.initPersonal(token);
+      }
+      _this.selectVm.on("reload-tabs", _this.bound("reloadTabs"));
+      _this.selectVm.on("status-update", _this.bound("statusUpdate"));
+      return _this.installer.on("status-update", _this.bound("statusUpdate"));
+    });
   };
 
   GithubMainView.prototype.reloadTabs = function() {
@@ -985,14 +953,13 @@ GithubMainView = (function(_super) {
   };
 
   GithubMainView.prototype.oauthAuthentication = function() {
+    var _this = this;
     return OAuth.popup("github", {
       cache: true
-    }).done((function(_this) {
-      return function(token) {
-        _this.initPersonal(token);
-        return _this.appStorage.setValue("githubToken", token);
-      };
-    })(this)).fail(function(err) {
+    }).done(function(token) {
+      _this.initPersonal(token);
+      return _this.appStorage.setValue("githubToken", token);
+    }).fail(function(err) {
       return console.log(err);
     });
   };

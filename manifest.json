@@ -8,7 +8,7 @@
   "path": "~/Applications/Github",
   "homepage": "bvallelunga.kd.io/github",
   "repository": "git://github.com/bvallelunga/github.kdapp.git",
-  "description": "Github : a Koding application created with the blank template.",
+  "description": "Github : Dashboard for exploring, searching and cloning github repos.",
   "category": "web-app",
   "source": {
     "blocks": {
