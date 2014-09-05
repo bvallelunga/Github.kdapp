@@ -52,16 +52,18 @@ class GithubRepoView extends KDListItemView
       partial       : buttonTitle
       cssClass      : "button #{cssClass}"
       click         : =>
-        @button.setClass "cloned"
-        @button.updatePartial "cloning"
-
-        @installer.cloneRepo(@repo).then =>
-          @button.updatePartial "cloned"
+        if not @repo.cloned
           @button.setClass "cloned"
+          @button.updatePartial "cloning"
 
-        .catch (error)=>
-          console.log error
+          @installer.cloneRepo(@repo).then =>
+            @button.updatePartial "cloned"
+            @button.setClass "cloned"
+            @repo.cloned = true
 
-          @button.updatePartial "failed"
-          @button.setClass "error"
-          @button.unsetClass "cloned"
+          .catch (error)=>
+            console.log error
+
+            @button.updatePartial "failed"
+            @button.setClass "error"
+            @button.unsetClass "cloned"

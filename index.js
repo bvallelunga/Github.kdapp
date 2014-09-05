@@ -1,4 +1,4 @@
-/* Compiled by kdc on Fri Sep 05 2014 22:06:11 GMT+0000 (UTC) */
+/* Compiled by kdc on Fri Sep 05 2014 22:11:46 GMT+0000 (UTC) */
 (function() {
 /* KDAPP STARTS */
 if (typeof window.appPreview !== "undefined" && window.appPreview !== null) {
@@ -302,17 +302,20 @@ GithubRepoView = (function(_super) {
       cssClass: "button " + cssClass,
       click: (function(_this) {
         return function() {
-          _this.button.setClass("cloned");
-          _this.button.updatePartial("cloning");
-          return _this.installer.cloneRepo(_this.repo).then(function() {
-            _this.button.updatePartial("cloned");
-            return _this.button.setClass("cloned");
-          })["catch"](function(error) {
-            console.log(error);
-            _this.button.updatePartial("failed");
-            _this.button.setClass("error");
-            return _this.button.unsetClass("cloned");
-          });
+          if (!_this.repo.cloned) {
+            _this.button.setClass("cloned");
+            _this.button.updatePartial("cloning");
+            return _this.installer.cloneRepo(_this.repo).then(function() {
+              _this.button.updatePartial("cloned");
+              _this.button.setClass("cloned");
+              return _this.repo.cloned = true;
+            })["catch"](function(error) {
+              console.log(error);
+              _this.button.updatePartial("failed");
+              _this.button.setClass("error");
+              return _this.button.unsetClass("cloned");
+            });
+          }
         };
       })(this)
     }));
