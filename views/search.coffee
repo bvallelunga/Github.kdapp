@@ -21,7 +21,8 @@ class GithubSearchPaneView extends KDView
       cssClass: "repos"
 
   reload: ->
-    @searchRepos @searchBox.getValue()
+    search = @searchBox.getValue()
+    @searchRepos search if search
 
   searchRepos: (search)->
     @loader.show()
