@@ -1,4 +1,4 @@
-/* Compiled by kdc on Fri Sep 05 2014 22:25:09 GMT+0000 (UTC) */
+/* Compiled by kdc on Sat Sep 06 2014 00:24:37 GMT+0000 (UTC) */
 (function() {
 /* KDAPP STARTS */
 if (typeof window.appPreview !== "undefined" && window.appPreview !== null) {
@@ -811,6 +811,10 @@ GithubInstallerController = (function(_super) {
 
   GithubInstallerController.prototype.repoData = function(repos, repo) {
     var _ref;
+    repo.description || (repo.description = "");
+    if (repo.description.length > 150) {
+      repo.description = "" + (repo.description.slice(0, 150)) + "...";
+    }
     return {
       name: repo.name,
       user: repo.owner.login,
@@ -877,7 +881,7 @@ GithubInstallerController = (function(_super) {
   };
 
   GithubInstallerController.prototype.cloneRepo = function(repo) {
-    this.announce("Cloning " + repo.name + "...");
+    this.announce("Cloning " + repo.name + " to ~/Github directory...");
     return this.kiteHelper.run({
       command: "git clone " + repo.cloneUrl + " ~/Github/" + repo.name
     }).then((function(_this) {

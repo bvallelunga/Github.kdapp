@@ -53,6 +53,11 @@ class GithubInstallerController extends KDController
         return repos
 
   repoData: (repos, repo) ->
+    repo.description or= ""
+
+    if repo.description.length > 150
+      repo.description = "#{repo.description.slice(0, 150)}..."
+
     name: repo.name
     user: repo.owner.login
     avatar: repo.owner.avatar_url
@@ -103,7 +108,7 @@ class GithubInstallerController extends KDController
       response.stdout.split("\n").map (folder)-> folder.slice(0, -1)
 
   cloneRepo: (repo)->
-    @announce "Cloning #{repo.name}..."
+    @announce "Cloning #{repo.name} to ~/Github directory..."
 
     @kiteHelper.run
       command: "git clone #{repo.cloneUrl} ~/Github/#{repo.name}"
